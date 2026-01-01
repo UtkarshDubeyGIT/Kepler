@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kepler - AI Planning Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap");
+
+      body {
+        font-family: "IBM Plex Sans", sans-serif;
+      }
+
+      .gradient-ring {
+        background: linear-gradient(
+          135deg,
+          #667eea 0%,
+          #764ba2 50%,
+          #f093fb 100%
+        );
+        animation: pulse-ring 3s ease-in-out infinite;
+      }
+
+      @keyframes pulse-ring {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.8;
+          transform: scale(1.05);
+        }
+      }
+
+      .glow-effect {
+        box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+      }
+
+      .chat-input:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.5);
+      }
+
+      .task-item {
+        transition: all 0.2s ease;
+      }
+
+      .task-item:hover {
+        transform: translateX(4px);
+      }
+
+      .goal-card {
+        transition: all 0.3s ease;
+      }
+
+      .goal-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      }
+
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+
+      .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-950 text-gray-100 min-h-screen">
+    <!-- Main Container -->
+    <div class="max-w-[95%] mx-auto my-10 px-1 py-8">
+      <!-- Header with Siri-like Button -->
+      <div class="flex items-center justify-between mb-8">
+        <div class="flex items-center gap-4">
+          <!-- Sidebar Button -->
+          <button
+            class="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 border border-gray-700 transition-colors flex-shrink-0"
+            aria-label="Open menu"
+          >
+            <svg
+              class="w-6 h-6 text-gray-300"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              ></path>
+            </svg>
+          </button>
+          <img
+            src="Mocks/Kepler-logo.png"
+            alt="Kepler"
+            class="h-10 object-contain"
+          />
+          <h1
+            class="text-3xl font-bold bg-white bg-clip-text text-transparent"
+            style="font-family: 'IBM Plex Mono', monospace"
+          >
+            Kepler
+          </h1>
+          <span
+            class="hidden lg:inline text-sm text-gray-400 items-center justify-center"
+            >Keep Everything Peacefully Lined up with Evolving Reality.</span
+          >
+        </div>
+
+        <!-- Siri-like Button - Desktop -->
+        <button
+          class="hidden lg:flex relative w-16 h-16 rounded-full gradient-ring glow-effect items-center justify-center hover:scale-110 transition-transform duration-300"
+        >
+          <div
+            class="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center overflow-hidden"
+          >
+            <img
+              src="Mocks/Kepler-logo.png"
+              alt="Kepler Logo"
+              class="w-full h-full object-contain"
+            />
+          </div>
+        </button>
+      </div>
+
+      <!-- Main Content Sections -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <!-- Section 1: Daily Tasks -->
+        <div class="bg-zinc-900 rounded-2xl p-2 lg:p-4 border border-zinc-800">
+          <div class="flex items-center justify-between mb-2">
+            <h2 class="text-lg lg:text-xl font-semibold text-gray-100">
+              Today's Plan
+            </h2>
+            <span class="text-xs lg:text-sm text-gray-500"
+              >Monday, January 15</span
+            >
+          </div>
+
+          <div class="space-y-2 lg:space-y-3 overflow-y-auto scrollbar-hide">
+            <!-- Task Items -->
+            <div
+              class="task-item rounded-lg p-2 lg:p-4 flex items-start gap-2 lg:gap-3"
+            >
+              <input
+                type="checkbox"
+                class="mt-1 w-4 h-4 lg:w-5 lg:h-5 rounded border-gray-600 bg-gray-700 text-purple-500 focus:ring-purple-500"
+              />
+              <div class="flex-1 min-w-0">
+                <p
+                  class="text-gray-100 font-medium text-sm lg:text-base truncate"
+                >
+                  Review MVP mockup designs
+                </p>
+                <p class="text-xs lg:text-sm text-gray-500 mt-1">
+                  9:00 AM - 10:30 AM
+                </p>
+              </div>
+              <span
+                class="hidden lg:inline-block px-2 py-1 text-xs rounded-full bg-purple-500/20 text-purple-300 flex-shrink-0"
+                >High</span
+              >
+            </div>
+
+            <div
+              class="task-item rounded-lg p-2 lg:p-4 flex items-start gap-2 lg:gap-3"
+            >
+              <input
+                type="checkbox"
+                class="mt-1 w-4 h-4 lg:w-5 lg:h-5 rounded border-gray-600 bg-gray-700 text-purple-500 focus:ring-purple-500"
+              />
+              <div class="flex-1 min-w-0">
+                <p
+                  class="text-gray-100 font-medium text-sm lg:text-base truncate"
+                >
+                  Team standup meeting
+                </p>
+                <p class="text-xs lg:text-sm text-gray-500 mt-1">
+                  10:30 AM - 11:00 AM
+                </p>
+              </div>
+              <span
+                class="hidden lg:inline-block px-2 py-1 text-xs rounded-full bg-blue-500/20 text-blue-300 flex-shrink-0"
+                >Fixed</span
+              >
+            </div>
+
+            <div
+              class="task-item rounded-lg p-2 lg:p-4 flex items-start gap-2 lg:gap-3"
+            >
+              <input
+                type="checkbox"
+                class="mt-1 w-4 h-4 lg:w-5 lg:h-5 rounded border-gray-600 bg-gray-700 text-purple-500 focus:ring-purple-500"
+              />
+              <div class="flex-1 min-w-0">
+                <p
+                  class="text-gray-100 font-medium text-sm lg:text-base truncate"
+                >
+                  Implement calendar integration
+                </p>
+                <p class="text-xs lg:text-sm text-gray-500 mt-1">
+                  11:00 AM - 1:00 PM
+                </p>
+              </div>
+              <span
+                class="hidden lg:inline-block px-2 py-1 text-xs rounded-full bg-purple-500/20 text-purple-300 flex-shrink-0"
+                >High</span
+              >
+            </div>
+
+            <div
+              class="task-item rounded-lg p-2 lg:p-4 flex items-start gap-2 lg:gap-3 opacity-60"
+            >
+              <input
+                type="checkbox"
+                class="mt-1 w-4 h-4 lg:w-5 lg:h-5 rounded border-gray-600 bg-gray-700 text-purple-500 focus:ring-purple-500"
+              />
+              <div class="flex-1 min-w-0">
+                <p
+                  class="text-gray-100 font-medium text-sm lg:text-base truncate"
+                >
+                  Lunch break
+                </p>
+                <p class="text-xs lg:text-sm text-gray-500 mt-1">
+                  1:00 PM - 2:00 PM
+                </p>
+              </div>
+              <span
+                class="hidden lg:inline-block px-2 py-1 text-xs rounded-full bg-gray-500/20 text-gray-400 flex-shrink-0"
+                >Routine</span
+              >
+            </div>
+
+            <div
+              class="task-item rounded-lg p-2 lg:p-4 flex items-start gap-2 lg:gap-3"
+            >
+              <input
+                type="checkbox"
+                class="mt-1 w-4 h-4 lg:w-5 lg:h-5 rounded border-gray-600 bg-gray-700 text-purple-500 focus:ring-purple-500"
+              />
+              <div class="flex-1 min-w-0">
+                <p
+                  class="text-gray-100 font-medium text-sm lg:text-base truncate"
+                >
+                  Code review & testing
+                </p>
+                <p class="text-xs lg:text-sm text-gray-500 mt-1">
+                  2:00 PM - 4:00 PM
+                </p>
+              </div>
+              <span
+                class="hidden lg:inline-block px-2 py-1 text-xs rounded-full bg-yellow-500/20 text-yellow-300 flex-shrink-0"
+                >Medium</span
+              >
+            </div>
+
+            <div
+              class="task-item rounded-lg p-2 lg:p-4 flex items-start gap-2 lg:gap-3"
+            >
+              <input
+                type="checkbox"
+                class="mt-1 w-4 h-4 lg:w-5 lg:h-5 rounded border-gray-600 bg-gray-700 text-purple-500 focus:ring-purple-500"
+              />
+              <div class="flex-1 min-w-0">
+                <p
+                  class="text-gray-100 font-medium text-sm lg:text-base truncate"
+                >
+                  Plan tomorrow's schedule
+                </p>
+                <p class="text-xs lg:text-sm text-gray-500 mt-1">
+                  4:00 PM - 4:30 PM
+                </p>
+              </div>
+              <span
+                class="hidden lg:inline-block px-2 py-1 text-xs rounded-full bg-green-500/20 text-green-300 flex-shrink-0"
+                >Low</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Chatbox -->
+        <div
+          class="hidden lg:block bg-zinc-900 rounded-2xl p-6 border border-zinc-800 mb-2"
+        >
+          <div class="mb-24 hidden lg:block">
+            <h2 class="text-lg font-semibold text-gray-100 mb-2">
+              Chat with Kepler
+            </h2>
+            <p class="text-sm text-gray-500">
+              Ask me to adjust your schedule, add tasks, or handle interruptions
+            </p>
+          </div>
+
+          <!-- Chat Messages Area -->
+          <div
+            class="hidden lg:block bg-zinc-900 rounded-lg p-4 mb-4 min-h-[200px] max-h-[300px] overflow-y-auto scrollbar-hide"
+          >
+            <div class="space-y-4">
+              <!-- Example Messages -->
+              <div class="flex gap-3">
+                <div
+                  class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0 overflow-hidden"
+                >
+                  <img
+                    src="Mocks/Kepler-logo.png"
+                    alt="Kepler"
+                    class="w-full h-full object-contain"
+                  />
+                </div>
+                <div class="flex-1">
+                  <p class="text-gray-300 text-sm">
+                    Good morning! I've updated your schedule based on
+                    yesterday's progress. You have 6 tasks planned for today.
+                  </p>
+                  <span class="text-xs text-gray-500 mt-1 block">9:00 AM</span>
+                </div>
+              </div>
+
+              <div class="flex gap-3 justify-end">
+                <div class="flex-1 flex justify-end">
+                  <div class="bg-zinc-800 rounded-lg p-3 max-w-[80%]">
+                    <p class="text-gray-100 text-sm">
+                      I need to push back the code review by an hour
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center flex-shrink-0"
+                >
+                  <span class="text-gray-300 text-xs">You</span>
+                </div>
+              </div>
+
+              <div class="flex gap-3">
+                <div
+                  class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0 overflow-hidden"
+                >
+                  <img
+                    src="Mocks/Kepler-logo.png"
+                    alt="Kepler"
+                    class="w-full h-full object-contain"
+                  />
+                </div>
+                <div class="flex-1">
+                  <p class="text-gray-300 text-sm">
+                    Done! I've rescheduled your code review to 3:00 PM and
+                    adjusted the rest of your afternoon tasks accordingly.
+                  </p>
+                  <span class="text-xs text-gray-500 mt-1 block">9:02 AM</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chat Input - Desktop -->
+          <div class="hidden lg:flex items-center gap-3">
+            <button
+              class="p-3 rounded-full bg-gray-800 hover:bg-gray-700 border border-gray-700 transition-colors flex-shrink-0"
+            >
+              <svg
+                class="w-5 h-5 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
+                ></path>
+              </svg>
+            </button>
+
+            <input
+              type="text"
+              placeholder="What's on your mind ..."
+              class="chat-input flex-1 bg-gray-800 border border-gray-700 rounded-full px-4 py-3 text-gray-100 placeholder-gray-500 focus:border-purple-500 transition-colors"
+            />
+
+            <button
+              class="p-3 rounded-full bg-white hover:bg-gray-100 transition-all flex-shrink-0 glow-effect"
+            >
+              <svg
+                class="w-5 h-5 text-gray-900"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 15l7-7 7 7"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Section 3: Monthly Goals -->
+        <div
+          class="hidden lg:block bg-zinc-900 rounded-2xl p-4 border border-zinc-800"
+        >
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-xl font-semibold text-gray-100">Monthly Goals</h2>
+            <span class="text-sm text-gray-500">January 2024</span>
+          </div>
+
+          <div class="space-y-4">
+            <!-- Goal Cards -->
+            <div class="goal-card rounded-xl p-4 border border-purple-500/20">
+              <div class="flex items-start justify-between mb-2">
+                <h3 class="font-semibold text-gray-100">Ship MVP</h3>
+                <span class="text-xs text-purple-300">65%</span>
+              </div>
+              <p class="text-sm text-gray-400 mb-3">
+                Complete core features and launch beta
+              </p>
+              <div class="w-full bg-gray-800 rounded-full h-2">
+                <div
+                  class="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full"
+                  style="width: 65%"
+                ></div>
+              </div>
+            </div>
+
+            <div class="goal-card rounded-xl p-4 border border-blue-500/20">
+              <div class="flex items-start justify-between mb-2">
+                <h3 class="font-semibold text-gray-100">Onboard 50 users</h3>
+                <span class="text-xs text-blue-300">32%</span>
+              </div>
+              <p class="text-sm text-gray-400 mb-3">
+                Beta testing and user feedback
+              </p>
+              <div class="w-full bg-gray-800 rounded-full h-2">
+                <div
+                  class="bg-gradient-to-r from-blue-500 to-cyan-500 h-2 rounded-full"
+                  style="width: 32%"
+                ></div>
+              </div>
+            </div>
+
+            <div class="goal-card rounded-xl p-4 border border-green-500/20">
+              <div class="flex items-start justify-between mb-2">
+                <h3 class="font-semibold text-gray-100">
+                  Calendar Integration
+                </h3>
+                <span class="text-xs text-green-300">80%</span>
+              </div>
+              <p class="text-sm text-gray-400 mb-3">
+                Google Calendar sync & event detection
+              </p>
+              <div class="w-full bg-gray-800 rounded-full h-2">
+                <div
+                  class="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full"
+                  style="width: 80%"
+                ></div>
+              </div>
+            </div>
+
+            <div class="goal-card rounded-xl p-4 border border-orange-500/20">
+              <div class="flex items-start justify-between mb-2">
+                <h3 class="font-semibold text-gray-100">
+                  Email Event Detection
+                </h3>
+                <span class="text-xs text-orange-300">45%</span>
+              </div>
+              <p class="text-sm text-gray-400 mb-3">
+                Read-only detection with confirmation
+              </p>
+              <div class="w-full bg-gray-800 rounded-full h-2">
+                <div
+                  class="bg-gradient-to-r from-orange-500 to-red-500 h-2 rounded-full"
+                  style="width: 45%"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating Siri Button - Mobile Only -->
+    <div class="lg:hidden fixed bottom-24 left-1/2 -translate-x-1/2 z-50">
+      <button
+        class="w-14 h-14 rounded-full gradient-ring glow-effect flex items-center justify-center hover:scale-110 transition-transform duration-300 shadow-lg"
+      >
+        <div
+          class="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center overflow-hidden"
+        >
+          <img
+            src="Mocks/Kepler-logo.png"
+            alt="Kepler Logo"
+            class="w-full h-full object-contain"
+          />
+        </div>
+      </button>
+    </div>
+
+    <!-- Mobile Chat Input - Fixed at Bottom -->
+    <div class="lg:hidden fixed bottom-4 left-0 right-0 px-4 z-40">
+      <div
+        class="bg-zinc-900 rounded-full p-3 border border-zinc-800 shadow-lg"
+      >
+        <div class="flex items-center gap-2">
+          <button
+            class="p-2 rounded-full bg-gray-800 hover:bg-gray-700 border border-gray-700 transition-colors flex-shrink-0"
+          >
+            <svg
+              class="w-4 h-4 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
+              ></path>
+            </svg>
+          </button>
+
+          <input
+            type="text"
+            placeholder="What's on your mind ..."
+            class="chat-input flex-1 bg-gray-800 border border-gray-700 rounded-full px-3 py-2 text-sm text-gray-100 placeholder-gray-500 focus:border-purple-500 transition-colors"
+          />
+
+          <button
+            class="p-2 rounded-full bg-white hover:bg-gray-100 transition-all flex-shrink-0 glow-effect"
+          >
+            <svg
+              class="w-4 h-4 text-gray-900"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 15l7-7 7 7"
+              ></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
