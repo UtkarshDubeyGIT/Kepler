@@ -5,7 +5,7 @@
 A working Next.js + Supabase skeleton with no Kepler features yet — just the plumbing.
 
 ## Deliverables
-- [ ] Next.js 14 project initialized with TypeScript, Tailwind, App Router
+- [ ] Next.js 15 project initialized with TypeScript, Tailwind, App Router
 - [ ] `.env.local` template committed (with empty values)
 - [ ] Supabase client helper at `lib/supabase.ts`
 - [ ] `types/index.ts` with all Kepler types defined

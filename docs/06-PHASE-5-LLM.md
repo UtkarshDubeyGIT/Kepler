@@ -9,13 +9,13 @@ A single LLM service that reads a user's chat message and returns structured JSO
 - [ ] Returns valid `ParsedIntent` type from `types/index.ts`
 - [ ] Handles all 4 intent types: `interruption`, `add_task`, `update_memory`, `chat`
 - [ ] Has a graceful fallback when JSON parsing fails
-- [ ] Uses Gemini 2.0 Flash via direct REST (no SDK)
+- [ ] Uses stable Gemini Flash (1.5/2.0) via direct REST (no SDK)
 
 ---
 
 ## Model Choice
 
-Use **Gemini 2.0 Flash** (`gemini-2.0-flash`).
+Use stable **Gemini 1.5 Flash** (`gemini-1.5-flash`) or **Gemini 2.0 Flash** (`gemini-2.0-flash`).
 
 - Free tier: 15 RPM, 1M tokens/day — sufficient for MVP testing
 - Get API key at: https://aistudio.google.com
@@ -33,7 +33,7 @@ Create `lib/llm.ts`:
 import type { ParsedIntent, PlanBlock, UserMemory } from '@/types'
 
 const GEMINI_URL =
-  'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent'
+  'https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent'
 
 // ─── Main Parser ──────────────────────────────────────────────────────────
 

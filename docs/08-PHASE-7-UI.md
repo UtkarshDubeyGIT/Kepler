@@ -12,6 +12,7 @@ The main app interface. Split-panel layout on desktop (chat left, plan + tasks r
 - [ ] `components/tasks/TaskList.tsx` — task list sidebar
 - [ ] `components/tasks/TaskItem.tsx` — individual task row
 - [ ] `components/ui/ConfirmReplan.tsx` — confirmation dialog for large drift
+- [ ] `components/ui/ThemeToggle.tsx` — light/dark theme toggle button
 - [ ] Mobile responsive (tab switcher on mobile)
 
 ---
@@ -61,6 +62,7 @@ import type { Task, PlanningState, UserMemory } from '@/types'
 import ChatPanel from '@/components/chat/ChatPanel'
 import PlanView from '@/components/plan/PlanView'
 import TaskList from '@/components/tasks/TaskList'
+import ThemeToggle from '@/components/ui/ThemeToggle'
 
 type MobileTab = 'chat' | 'plan' | 'tasks'
 
@@ -99,16 +101,19 @@ export default function DashboardClient({ initialMemory, initialTasks, initialPl
   ]
 
   return (
-    <div className="h-screen flex flex-col bg-slate-50 overflow-hidden">
+    <div className="h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 overflow-hidden transition-colors">
 
       {/* Header */}
-      <header className="flex-none border-b bg-white px-4 py-3 flex items-center justify-between">
-        <h1 className="text-lg font-bold tracking-tight text-slate-900">Kepler</h1>
-        <span className="text-xs text-slate-400">{userEmail}</span>
+      <header className="flex-none border-b dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3 flex items-center justify-between transition-colors">
+        <h1 className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100">Kepler</h1>
+        <div className="flex items-center gap-4">
+          <ThemeToggle />
+          <span className="text-xs text-slate-400 dark:text-slate-500">{userEmail}</span>
+        </div>
       </header>
 
       {/* Mobile tab switcher */}
-      <div className="flex-none md:hidden border-b bg-white px-4">
+      <div className="flex-none md:hidden border-b dark:border-slate-800 bg-white dark:bg-slate-900 px-4 transition-colors">
         <div className="flex gap-1">
           {tabs.map(tab => (
             <button
@@ -116,8 +121,8 @@ export default function DashboardClient({ initialMemory, initialTasks, initialPl
               onClick={() => setMobileTab(tab.key)}
               className={`px-3 py-2.5 text-sm font-medium border-b-2 transition-colors ${
                 mobileTab === tab.key
-                  ? 'border-indigo-600 text-indigo-600'
-                  : 'border-transparent text-slate-500 hover:text-slate-700'
+                  ? 'border-indigo-600 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400'
+                  : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
               }`}
             >
               {tab.label}
@@ -725,6 +730,52 @@ export default function ConfirmReplan({ driftMins, onConfirm, onDismiss }: Props
 
 ---
 
+## Theme Toggle Component
+
+Create `components/ui/ThemeToggle.tsx` using stable Tailwind CSS v4 class-based dark mode patterns.
+
+```typescript
+'use client'
+
+import { useEffect, useState } from 'react'
+
+export default function ThemeToggle() {
+  const [theme, setTheme] = useState<'light' | 'dark'>('light')
+
+  useEffect(() => {
+    // Read from localStorage or system preference
+    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null
+    if (savedTheme) {
+      setTheme(savedTheme)
+      document.documentElement.classList.toggle('dark', savedTheme === 'dark')
+    } else {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+      setTheme(prefersDark ? 'dark' : 'light')
+      document.documentElement.classList.toggle('dark', prefersDark)
+    }
+  }, [])
+
+  function toggleTheme() {
+    const newTheme = theme === 'light' ? 'dark' : 'light'
+    setTheme(newTheme)
+    localStorage.setItem('theme', newTheme)
+    document.documentElement.classList.toggle('dark', newTheme === 'dark')
+  }
+
+  return (
+    <button
+      onClick={toggleTheme}
+      className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+      aria-label="Toggle Theme"
+    >
+      {theme === 'light' ? '🌙' : '☀️'}
+    </button>
+  )
+}
+```
+
+---
+
 ## Verification
 
 1. Sign in → complete onboarding → land on dashboard
@@ -736,3 +787,4 @@ export default function ConfirmReplan({ driftMins, onConfirm, onDismiss }: Props
 7. Click "Undo replan" → plan reverts
 8. Add a task via the task list → appears immediately
 9. Click the circle on a task → task disappears (marked done)
+10. Click the theme toggle icon in the header → dashboard colors toggle instantly between light theme (slate-50 background/indigo accents) and dark theme (deep navy background/light indigo accents), and the choice is persisted across page reloads.

@@ -44,13 +44,13 @@ Broader: developers, solo founders, product managers, graduate students, knowled
 
 | Concern | Decision |
 |---|---|
-| Framework | Next.js 14+ with App Router |
+| Framework | Next.js 15 (LTS) with App Router |
 | Language | TypeScript (strict) |
-| Styling | Tailwind CSS |
+| Styling | Tailwind CSS v4 (stable) |
 | Auth | Supabase Auth with Google OAuth |
 | Database | Supabase (Postgres) |
 | Calendar | Google Calendar API — read-only scope only |
-| LLM | Gemini 2.0 Flash (via REST, not SDK) |
+| LLM | Gemini 1.5/2.0 Flash (stable, via REST, not SDK) |
 | Deployment | Vercel |
 
 **Do not substitute these.** Do not add extra dependencies unless explicitly specified in a phase doc.
@@ -204,7 +204,6 @@ Do not build, mention, or stub these:
 - General-purpose chatbot mode
 - Automated memory pruning
 - Drag-and-drop calendar UI
-- Dark mode
 - PWA
 
 ---
