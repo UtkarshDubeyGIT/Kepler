@@ -99,12 +99,12 @@ export default function DashboardClient({ initialMemory, initialTasks, initialPl
   ]
 
   return (
-    <div className="h-screen flex flex-col bg-gray-50 overflow-hidden">
+    <div className="h-screen flex flex-col bg-slate-50 overflow-hidden">
 
       {/* Header */}
       <header className="flex-none border-b bg-white px-4 py-3 flex items-center justify-between">
-        <h1 className="text-lg font-bold tracking-tight">Kepler</h1>
-        <span className="text-xs text-gray-400">{userEmail}</span>
+        <h1 className="text-lg font-bold tracking-tight text-slate-900">Kepler</h1>
+        <span className="text-xs text-slate-400">{userEmail}</span>
       </header>
 
       {/* Mobile tab switcher */}
@@ -116,8 +116,8 @@ export default function DashboardClient({ initialMemory, initialTasks, initialPl
               onClick={() => setMobileTab(tab.key)}
               className={`px-3 py-2.5 text-sm font-medium border-b-2 transition-colors ${
                 mobileTab === tab.key
-                  ? 'border-gray-900 text-gray-900'
-                  : 'border-transparent text-gray-500'
+                  ? 'border-indigo-600 text-indigo-600'
+                  : 'border-transparent text-slate-500 hover:text-slate-700'
               }`}
             >
               {tab.label}
@@ -309,10 +309,10 @@ export default function ChatPanel({ onPlanUpdate, onTaskAdded, currentPlanVersio
           >
             <div className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
               msg.role === 'user'
-                ? 'bg-gray-900 text-white'
+                ? 'bg-indigo-600 text-white'
                 : msg.role === 'system'
                 ? 'bg-blue-50 text-blue-800 border border-blue-100 w-full max-w-full rounded-xl text-xs'
-                : 'bg-gray-100 text-gray-800'
+                : 'bg-slate-100 text-slate-800'
             }`}>
               {msg.content}
             </div>
@@ -321,11 +321,11 @@ export default function ChatPanel({ onPlanUpdate, onTaskAdded, currentPlanVersio
 
         {loading && (
           <div className="flex justify-start">
-            <div className="bg-gray-100 rounded-2xl px-4 py-2.5">
+            <div className="bg-slate-100 rounded-2xl px-4 py-2.5">
               <div className="flex gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '0ms' }} />
-                <span className="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '150ms' }} />
-                <span className="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '300ms' }} />
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce" style={{ animationDelay: '0ms' }} />
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce" style={{ animationDelay: '150ms' }} />
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce" style={{ animationDelay: '300ms' }} />
               </div>
             </div>
           </div>
@@ -350,13 +350,13 @@ export default function ChatPanel({ onPlanUpdate, onTaskAdded, currentPlanVersio
           onChange={e => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Tell Kepler what's happening..."
-          className="flex-1 bg-gray-100 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-1"
+          className="flex-1 bg-slate-100 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 text-slate-800"
           disabled={loading}
         />
         <button
           onClick={() => sendMessage()}
           disabled={!input.trim() || loading}
-          className="bg-gray-900 text-white rounded-xl px-4 py-2.5 text-sm font-medium disabled:opacity-40 hover:bg-gray-700 transition-colors flex-none"
+          className="bg-indigo-600 text-white rounded-xl px-4 py-2.5 text-sm font-medium disabled:opacity-40 hover:bg-indigo-700 transition-colors flex-none"
         >
           Send
         </button>
@@ -403,20 +403,20 @@ export default function PlanView({ plan, onUndo }: Props) {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-slate-50">
       {/* Header */}
       <div className="flex-none px-4 py-3 border-b flex items-center justify-between bg-white">
         <div>
-          <h2 className="text-sm font-semibold text-gray-900">Today's Plan</h2>
+          <h2 className="text-sm font-semibold text-slate-900">Today's Plan</h2>
           {plan?.last_replan_reason && (
-            <p className="text-xs text-blue-600 mt-0.5 leading-tight">{plan.last_replan_reason}</p>
+            <p className="text-xs text-indigo-600 mt-0.5 leading-tight">{plan.last_replan_reason}</p>
           )}
         </div>
         {hasUndo && (
           <button
             onClick={handleUndo}
             disabled={undoing}
-            className="text-xs text-gray-500 border border-gray-200 rounded-lg px-3 py-1.5 hover:border-gray-400 disabled:opacity-40 transition-colors flex items-center gap-1.5"
+            className="text-xs text-slate-500 border border-slate-200 rounded-lg px-3 py-1.5 hover:border-slate-400 disabled:opacity-40 transition-colors flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             ↩ Undo replan
           </button>
@@ -426,7 +426,7 @@ export default function PlanView({ plan, onUndo }: Props) {
       {/* Blocks */}
       <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2">
         {blocks.length === 0 ? (
-          <div className="text-center py-8 text-gray-400 text-sm">
+          <div className="text-center py-8 text-slate-400 text-sm">
             <p>No plan yet.</p>
             <p className="mt-1">Add some tasks and Kepler will build your day.</p>
           </div>
@@ -446,31 +446,31 @@ function PlanBlockCard({ block }: { block: PlanBlock }) {
   return (
     <div className={`rounded-xl px-3 py-2.5 border ${
       isCalendar
-        ? 'bg-blue-50 border-blue-100'
+        ? 'bg-cyan-50 border-cyan-100'
         : block.flexible === false
-        ? 'bg-orange-50 border-orange-100'
-        : 'bg-white border-gray-100'
+        ? 'bg-indigo-50 border-indigo-100'
+        : 'bg-white border-slate-100'
     }`}>
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
           <p className={`text-sm font-medium truncate ${
-            isCalendar ? 'text-blue-800' : 'text-gray-800'
+            isCalendar ? 'text-cyan-800' : 'text-slate-800'
           }`}>
             {block.title}
           </p>
           {block.reason && (
-            <p className="text-xs text-gray-400 mt-0.5 truncate">{block.reason}</p>
+            <p className="text-xs text-slate-400 mt-0.5 truncate">{block.reason}</p>
           )}
         </div>
         <div className="text-right flex-none">
-          <p className="text-xs font-mono text-gray-500">
+          <p className="text-xs font-mono text-slate-500">
             {block.start}–{block.end}
           </p>
           {isCalendar && (
-            <span className="text-[10px] text-blue-500">Calendar</span>
+            <span className="text-[10px] text-cyan-600 font-medium">Calendar</span>
           )}
           {!isCalendar && block.flexible === false && (
-            <span className="text-[10px] text-orange-500">High priority</span>
+            <span className="text-[10px] text-indigo-600 font-medium">High priority</span>
           )}
         </div>
       </div>
@@ -530,15 +530,15 @@ export default function TaskList({ tasks, onTaskUpdated, onTaskDeleted }: Props)
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-slate-50">
       {/* Header */}
       <div className="flex-none px-4 py-3 border-b flex items-center justify-between bg-white">
-        <h2 className="text-sm font-semibold text-gray-900">
-          Tasks <span className="text-gray-400 font-normal">({pending.length})</span>
+        <h2 className="text-sm font-semibold text-slate-900">
+          Tasks <span className="text-slate-400 font-normal">({pending.length})</span>
         </h2>
         <button
           onClick={() => setAdding(true)}
-          className="text-xs bg-gray-900 text-white rounded-lg px-3 py-1.5 hover:bg-gray-700 transition-colors"
+          className="text-xs bg-indigo-600 text-white rounded-lg px-3 py-1.5 hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
           + Add
         </button>
@@ -555,19 +555,19 @@ export default function TaskList({ tasks, onTaskUpdated, onTaskDeleted }: Props)
               onChange={e => setNewTitle(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleAddTask()}
               placeholder="Task name..."
-              className="flex-1 text-sm border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
+              className="flex-1 text-sm border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-800"
               autoFocus
             />
             <button
               onClick={handleAddTask}
               disabled={!newTitle.trim() || submitting}
-              className="text-xs bg-gray-900 text-white rounded-lg px-3 py-2 disabled:opacity-40"
+              className="text-xs bg-indigo-600 text-white rounded-lg px-3 py-2 disabled:opacity-40 hover:bg-indigo-700"
             >
               Add
             </button>
             <button
               onClick={() => { setAdding(false); setNewTitle('') }}
-              className="text-xs text-gray-500 rounded-lg px-2 py-2"
+              className="text-xs text-slate-500 rounded-lg px-2 py-2 hover:text-slate-700"
             >
               ✕
             </button>
@@ -577,7 +577,7 @@ export default function TaskList({ tasks, onTaskUpdated, onTaskDeleted }: Props)
         {/* Deadline tasks */}
         {withDeadline.length > 0 && (
           <div className="mb-3">
-            <p className="text-[10px] uppercase tracking-wider text-gray-400 mb-2">With deadlines</p>
+            <p className="text-[10px] uppercase tracking-wider text-slate-400 mb-2">With deadlines</p>
             {withDeadline.map(task => (
               <TaskItem key={task.id} task={task} onUpdated={onTaskUpdated} onDeleted={onTaskDeleted} />
             ))}
@@ -587,7 +587,7 @@ export default function TaskList({ tasks, onTaskUpdated, onTaskDeleted }: Props)
         {/* Backlog */}
         {backlog.length > 0 && (
           <div>
-            <p className="text-[10px] uppercase tracking-wider text-gray-400 mb-2">Backlog</p>
+            <p className="text-[10px] uppercase tracking-wider text-slate-400 mb-2">Backlog</p>
             {backlog.map(task => (
               <TaskItem key={task.id} task={task} onUpdated={onTaskUpdated} onDeleted={onTaskDeleted} />
             ))}
@@ -595,7 +595,7 @@ export default function TaskList({ tasks, onTaskUpdated, onTaskDeleted }: Props)
         )}
 
         {pending.length === 0 && !adding && (
-          <p className="text-sm text-gray-400 text-center py-6">
+          <p className="text-sm text-slate-400 text-center py-6">
             No tasks yet. Add some above or tell Kepler in chat.
           </p>
         )}
@@ -643,8 +643,8 @@ export default function TaskItem({ task, onUpdated, onDeleted }: Props) {
 
   const priorityDot: Record<string, string> = {
     high: 'bg-red-400',
-    medium: 'bg-yellow-400',
-    low: 'bg-gray-300',
+    medium: 'bg-amber-400',
+    low: 'bg-slate-300',
   }
 
   const deadlineFmt = task.deadline
@@ -652,30 +652,30 @@ export default function TaskItem({ task, onUpdated, onDeleted }: Props) {
     : null
 
   return (
-    <div className={`flex items-center gap-3 py-2 px-2 rounded-lg hover:bg-gray-50 group ${loading ? 'opacity-50' : ''}`}>
+    <div className={`flex items-center gap-3 py-2 px-2 rounded-lg hover:bg-slate-50 group ${loading ? 'opacity-50' : ''}`}>
       {/* Checkbox */}
       <button
         onClick={markDone}
         disabled={loading}
-        className="w-4 h-4 rounded-full border-2 border-gray-300 flex-none hover:border-gray-900 transition-colors"
+        className="w-4 h-4 rounded-full border-2 border-slate-300 flex-none hover:border-indigo-600 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
       />
 
       {/* Priority dot */}
       <span className={`w-2 h-2 rounded-full flex-none ${priorityDot[task.priority]}`} />
 
       {/* Title */}
-      <span className="flex-1 text-sm text-gray-700 truncate">{task.title}</span>
+      <span className="flex-1 text-sm text-slate-700 truncate">{task.title}</span>
 
       {/* Deadline */}
       {deadlineFmt && (
-        <span className="text-xs text-gray-400 flex-none">{deadlineFmt}</span>
+        <span className="text-xs text-slate-400 flex-none">{deadlineFmt}</span>
       )}
 
       {/* Delete */}
       <button
         onClick={deleteTask}
         disabled={loading}
-        className="text-gray-300 hover:text-red-400 text-xs opacity-0 group-hover:opacity-100 transition-opacity flex-none"
+        className="text-slate-300 hover:text-red-400 text-xs opacity-0 group-hover:opacity-100 transition-opacity flex-none"
       >
         ✕
       </button>

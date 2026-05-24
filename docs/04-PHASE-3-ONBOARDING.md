@@ -132,7 +132,7 @@ import { parseWorkHours } from '@/lib/parse-work-hours'
 import { parseGoals } from '@/lib/parse-goals'
 
 type Step = {
-  key: 'goals' | 'work_hours' | 'commitments'
+  key: 'goals' | 'work_hours' | 'commitments' | 'block_all_day_events'
   question: string
   placeholder: string
   hint: string
@@ -157,12 +157,19 @@ const STEPS: Step[] = [
     placeholder: "e.g. 9am standup Mon–Fri, gym at 7pm, college from 9am–4pm",
     hint: "These will always be treated as non-negotiable blocks.",
   },
+  {
+    key: 'block_all_day_events',
+    question: "Should Kepler block out your day for all-day calendar events?",
+    placeholder: "Type 'yes' or 'no'. (Default: no)",
+    hint: "If yes, all-day events explicitly marked as 'Busy' (opaque) in Google Calendar will block scheduling.",
+  },
 ]
 
 type Answers = {
   goals: string
   work_hours: string
   commitments: string
+  block_all_day_events: string
 }
 
 export default function OnboardingPage() {
@@ -171,6 +178,7 @@ export default function OnboardingPage() {
     goals: '',
     work_hours: '',
     commitments: '',
+    block_all_day_events: '',
   })
   const [input, setInput] = useState('')
   const [saving, setSaving] = useState(false)
@@ -181,7 +189,7 @@ export default function OnboardingPage() {
   const isLastStep = step === STEPS.length - 1
 
   async function handleNext() {
-    if (!input.trim()) return
+    if (!input.trim() && currentStep.key !== 'block_all_day_events') return
 
     const updated = { ...answers, [currentStep.key]: input }
     setAnswers(updated)
@@ -200,6 +208,7 @@ export default function OnboardingPage() {
 
       const parsedHours = parseWorkHours(updated.work_hours)
       const parsedGoals = parseGoals(updated.goals)
+      const blockAllDayEvents = /yes|block|true|y/i.test(updated.block_all_day_events || 'no')
 
       // Parse commitments as routines (simple split, no duration in v1)
       const parsedRoutines = updated.commitments
@@ -211,7 +220,10 @@ export default function OnboardingPage() {
       await supabase.from('user_memory').upsert({
         user_id: user.id,
         goals: parsedGoals,
-        constraints: parsedHours,
+        constraints: {
+          ...parsedHours,
+          block_all_day_events: blockAllDayEvents,
+        },
         routines: parsedRoutines,
         onboarding_complete: true,
         updated_at: new Date().toISOString(),
@@ -232,13 +244,13 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-start justify-center pt-24 px-4">
+    <div className="min-h-screen bg-slate-50 flex items-start justify-center pt-24 px-4">
       <div className="w-full max-w-lg">
 
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Let's set you up</h1>
-          <p className="text-gray-500 text-sm mt-1">
+          <h1 className="text-2xl font-bold text-slate-900">Let's set you up</h1>
+          <p className="text-slate-500 text-sm mt-1">
             This takes about 2 minutes. Kepler learns from your answers.
           </p>
         </div>
@@ -249,7 +261,7 @@ export default function OnboardingPage() {
             <div
               key={i}
               className={`h-1 flex-1 rounded-full transition-colors ${
-                i <= step ? 'bg-gray-900' : 'bg-gray-200'
+                i <= step ? 'bg-indigo-600' : 'bg-slate-200'
               }`}
             />
           ))}
@@ -257,13 +269,13 @@ export default function OnboardingPage() {
 
         {/* Question */}
         <div className="mb-6">
-          <p className="text-gray-400 text-xs uppercase tracking-wider mb-2">
+          <p className="text-slate-400 text-xs uppercase tracking-wider mb-2">
             Question {step + 1} of {STEPS.length}
           </p>
-          <h2 className="text-xl font-semibold text-gray-900 mb-1">
+          <h2 className="text-xl font-semibold text-slate-900 mb-1">
             {currentStep.question}
           </h2>
-          <p className="text-sm text-gray-500">{currentStep.hint}</p>
+          <p className="text-sm text-slate-500">{currentStep.hint}</p>
         </div>
 
         {/* Input */}
@@ -273,7 +285,7 @@ export default function OnboardingPage() {
           onKeyDown={handleKeyDown}
           placeholder={currentStep.placeholder}
           rows={4}
-          className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 resize-none bg-white"
+          className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none bg-white"
           autoFocus
         />
 
@@ -282,7 +294,7 @@ export default function OnboardingPage() {
           {step > 0 ? (
             <button
               onClick={() => { setStep(step - 1); setInput(answers[STEPS[step - 1].key]) }}
-              className="text-sm text-gray-500 hover:text-gray-700"
+              className="text-sm text-slate-500 hover:text-slate-700"
             >
               ← Back
             </button>
@@ -291,15 +303,15 @@ export default function OnboardingPage() {
           )}
           <button
             onClick={handleNext}
-            disabled={!input.trim() || saving}
-            className="bg-gray-900 text-white text-sm font-medium px-6 py-2.5 rounded-xl disabled:opacity-40 hover:bg-gray-700 transition-colors"
+            disabled={(currentStep.key !== 'block_all_day_events' && !input.trim()) || saving}
+            className="bg-indigo-600 text-white text-sm font-medium px-6 py-2.5 rounded-xl disabled:opacity-40 hover:bg-indigo-700 transition-colors"
           >
             {saving ? 'Saving...' : isLastStep ? 'Start planning →' : 'Next →'}
           </button>
         </div>
 
         {/* Keyboard hint */}
-        <p className="text-xs text-gray-400 text-right mt-2">
+        <p className="text-xs text-slate-400 text-right mt-2">
           Press Enter to continue
         </p>
       </div>

@@ -156,13 +156,20 @@ export function replan(
     b => timeToMins(b.end) <= timeToMins(newCurrentTime)
   )
 
-  // Keep future calendar events as hard constraints
-  const futureCalendarBlocks = currentBlocks.filter(
-    b => b.type === 'calendar' && timeToMins(b.start) > timeToMins(newCurrentTime)
-  )
+  // Extract calendar events from the current plan to prevent losing them
+  const existingCalendarBlocks: CalendarBlock[] = currentBlocks
+    .filter(b => b.type === 'calendar')
+    .map(b => ({ title: b.title, start: b.start, end: b.end }))
+
+  // Combine passed calendarBlocks and existing ones from currentBlocks
+  // Keep unique ones based on title, start, and end
+  const combinedCalendarBlocksMap = new Map<string, CalendarBlock>()
+  existingCalendarBlocks.forEach(b => combinedCalendarBlocksMap.set(`${b.start}-${b.end}-${b.title}`, b))
+  calendarBlocks.forEach(b => combinedCalendarBlocksMap.set(`${b.start}-${b.end}-${b.title}`, b))
+  const combinedCalendarBlocks = Array.from(combinedCalendarBlocksMap.values())
 
   // Re-derive calendar blocks for the free slot computation
-  const allCalendarBlocks: CalendarBlock[] = calendarBlocks.filter(
+  const allCalendarBlocks: CalendarBlock[] = combinedCalendarBlocks.filter(
     b => timeToMins(b.end) > timeToMins(newCurrentTime)
   )
 
@@ -561,6 +568,19 @@ describe('replan', () => {
     const meetingBlock = blocks.find(b => b.title === 'Meeting')
     expect(meetingBlock).toBeDefined()
     expect(meetingBlock!.flexible).toBe(false)
+  })
+
+  it('preserves calendar events in replan even when empty calendar array is passed', () => {
+    const tasks = [makeTask()]
+    const calBlocks: CalendarBlock[] = [{ title: 'Meeting', start: '14:00', end: '15:00' }]
+    const currentBlocks = generatePlan(tasks, calBlocks, '09:00', '18:00', TODAY)
+
+    const { blocks } = replan(currentBlocks, tasks, [], '18:00', '10:00', 30, TODAY)
+    const meetingBlock = blocks.find(b => b.title === 'Meeting')
+    expect(meetingBlock).toBeDefined()
+    expect(meetingBlock!.flexible).toBe(false)
+    expect(meetingBlock!.start).toBe('14:00')
+    expect(meetingBlock!.end).toBe('15:00')
   })
 })
 ```

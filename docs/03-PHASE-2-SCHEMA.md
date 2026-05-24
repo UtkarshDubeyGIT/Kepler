@@ -30,8 +30,8 @@ create table if not exists public.user_memory (
   goals         jsonb not null default '[]'::jsonb,
   -- goals shape: [{ "title": "Ship MVP by March", "priority": "high" }]
 
-  constraints   jsonb not null default '{"work_start": "09:00", "work_end": "18:00"}'::jsonb,
-  -- constraints shape: { "work_start": "09:00", "work_end": "18:00" }
+  constraints   jsonb not null default '{"work_start": "09:00", "work_end": "18:00", "block_all_day_events": false}'::jsonb,
+  -- constraints shape: { "work_start": "09:00", "work_end": "18:00", "block_all_day_events": false }
   -- IMPORTANT: work_start and work_end must always be "HH:MM" 24-hour strings
 
   routines      jsonb not null default '[]'::jsonb,
@@ -227,6 +227,7 @@ For each table, go to **Authentication → Policies** and verify RLS is enabled 
 These must be consistent everywhere in the codebase:
 
 - `constraints.work_start` and `constraints.work_end` are always `"HH:MM"` strings in 24-hour format (e.g. `"09:00"`, `"18:30"`)
+- `constraints.block_all_day_events` is a boolean specifying whether all-day busy events block scheduling
 - `plan blocks[].start` and `blocks[].end` are always `"HH:MM"` strings
 - `tasks.deadline` is always an ISO 8601 timestamp string or `null`
 - `tasks.estimated_duration_mins` is `null` in v1 — the planner uses **45 minutes** as the default

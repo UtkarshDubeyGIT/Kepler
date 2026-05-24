@@ -121,6 +121,7 @@ export type Goal = {
 export type Constraints = {
   work_start: string  // "09:00"
   work_end: string    // "18:00"
+  block_all_day_events: boolean
 }
 
 export type Routine = {

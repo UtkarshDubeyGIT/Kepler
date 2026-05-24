@@ -104,7 +104,7 @@ Stores persistent planning context per user.
 ```
 user_id (PK, FK → auth.users)
 goals: jsonb          -- [{ title, priority }]
-constraints: jsonb    -- { work_start: "09:00", work_end: "18:00" }
+constraints: jsonb    -- { work_start: "09:00", work_end: "18:00", block_all_day_events: boolean }
 routines: jsonb       -- [{ title, duration_mins }]
 onboarding_complete: boolean
 updated_at: timestamptz
@@ -154,7 +154,8 @@ created_at: timestamptz
 ### `user_tokens`
 Google Calendar token storage.
 ```
-user_id (PK, FK → auth.users)
+id (PK, uuid)
+user_id (FK → auth.users)
 provider: text
 access_token: text
 refresh_token: text
@@ -185,6 +186,7 @@ Database → API Route → Planning Engine → Database
 - Backlog selection: **FIFO** (created_at ascending)
 - Confidence threshold for auto-replan: **< 20 minutes drift = auto-adjust; ≥ 20 minutes = ask user first**
 - Work hours if not set: **09:00 – 18:00**
+- All-day calendar events blocking: **false by default (configurable)**
 
 ---
 
